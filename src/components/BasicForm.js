@@ -27,15 +27,16 @@ const BasicForm = (props) => {
     reset: emailReset,
   } = useInput((value) => value.trim().includes("@") && value.trim() !== "");
 
+  let isFormValid = false;
+  if (isFirstValid && isLastValid && isEmailValid) isFormValid = true;
+
   const FormSubmitHandler = (e) => {
     e.preventDefault();
+    if (isFormValid) return;
     firstReset();
     lastReset();
     emailReset();
   };
-
-  let isFormValid = false;
-  if (isFirstValid && isLastValid && isEmailValid) isFormValid = true;
 
   const firstClass = firstError ? "form-control invalid" : "form-control";
   const lastClass = lastError ? "form-control invalid" : "form-control";
