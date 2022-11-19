@@ -1,45 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
-  const [isNameValid, setisNameValid] = useState(false);
   const [nameTouched, setnameTouched] = useState(false);
 
-  useEffect(() => {
-    if (!isNameValid) {
-      console.log("User name invalid");
-    }
-  }, [isNameValid]);
+  const isNameValid = enteredName.trim() !== "";
+  const isInvalid = !isNameValid && nameTouched;
+  let isFormValid = false;
+
+  if (isNameValid) {
+    isFormValid = true;
+  }
 
   const inputChangeHandler = (e) => {
     setEnteredName(e.target.value);
   };
+
   const inputBlurHandler = () => {
     setnameTouched(true);
-    
-    if (enteredName.trim() === "") {
-      setisNameValid(false);
-      return;
-    }
   };
 
   const formSubmissionHandler = (e) => {
     e.preventDefault();
     setnameTouched(true);
 
-    if (enteredName.trim() === "") {
-      setisNameValid(false);
-      return;
-    }
-
-    setisNameValid(true);
+    if (!isNameValid) return;
     console.log(enteredName);
 
     // inputRef.current.value = ""; Do NOT manipulate the DOM, let react handle the DOM
     setEnteredName("");
+    setnameTouched(false);
   };
-
-  const isInvalid = !isNameValid && nameTouched;
 
   const inputClass = isInvalid ? "form-control invalid" : "form-control";
 
@@ -57,7 +48,7 @@ const SimpleInput = (props) => {
         {isInvalid && <p className="error-text">Name should not be empty.</p>}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!isFormValid}>Submit</button>
       </div>
     </form>
   );
