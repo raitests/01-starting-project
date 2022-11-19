@@ -99,6 +99,10 @@ button:hover {
   background-color: #fddddd;
 }
 
+.invalid p {
+  color: #b40e0e;
+}
+
 .invalid input:focus {
   border-color: #ff8800;
   background-color: #fbe8d2;
