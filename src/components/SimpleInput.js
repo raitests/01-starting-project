@@ -1,38 +1,29 @@
-import { useState } from "react";
-
+import useInput from "../hooks/use-input";
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [nameTouched, setnameTouched] = useState(false);
+  const {
+    enteredValue: enteredName,
+    setIsTouched: setNameTouched,
+    inputBlurHandler: nameBlurHandler,
+    inputChangeHandler: nameChangeHandler,
+    showError: nameHasError,
+    isValueValid: isNameValid,
+    reset,
+  } = useInput((value) => value.trim() !== "");
 
-  const isNameValid = enteredName.trim() !== "";
-  const isInvalid = !isNameValid && nameTouched;
   let isFormValid = false;
-
-  if (isNameValid) {
-    isFormValid = true;
-  }
-
-  const inputChangeHandler = (e) => {
-    setEnteredName(e.target.value);
-  };
-
-  const inputBlurHandler = () => {
-    setnameTouched(true);
-  };
+  if (isNameValid) isFormValid = true;
 
   const formSubmissionHandler = (e) => {
     e.preventDefault();
-    setnameTouched(true);
+    setNameTouched(true);
 
     if (!isNameValid) return;
-    console.log(enteredName);
 
     // inputRef.current.value = ""; Do NOT manipulate the DOM, let react handle the DOM
-    setEnteredName("");
-    setnameTouched(false);
+    reset();
   };
 
-  const inputClass = isInvalid ? "form-control invalid" : "form-control";
+  const inputClass = nameHasError ? "form-control invalid" : "form-control";
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -41,11 +32,13 @@ const SimpleInput = (props) => {
         <input
           type="text"
           id="name"
-          onChange={inputChangeHandler}
-          onBlur={inputBlurHandler}
+          onChange={nameChangeHandler}
+          onBlur={nameBlurHandler}
           value={enteredName}
         />
-        {isInvalid && <p className="error-text">Name should not be empty.</p>}
+        {nameHasError && (
+          <p className="error-text">Name should not be empty.</p>
+        )}
       </div>
       <div className="form-actions">
         <button disabled={!isFormValid}>Submit</button>
